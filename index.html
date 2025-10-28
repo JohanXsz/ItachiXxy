@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ItachiXxy WebSite</title>
+    <style>
+         :root {
+            --neon: #00ffff;
+            --bg-color: #0f0f1f;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-color);
+            overflow-x: hidden;
+            position: relative;
+            cursor: crosshair;
+            padding: 20px;
+        }
+        /* فيديو الخلفية */
+        
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.4;
+        }
+        /* نقاط Neon */
+        
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--neon);
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: floatParticles linear infinite;
+        }
+        
+        @keyframes floatParticles {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-600px) translateX(50px);
+                opacity: 0;
+            }
+        }
+        /* لوحة اختيار الألوان - أعلى اليسار */
+        
+        .color-picker {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+            align-items: center;
+            background: #0f0f1f;
+            padding: 15px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--neon);
+            box-shadow: 0 0 15px var(--neon);
+        }
+        
+        .color-picker-title {
+            color: var(--neon);
+            font-size: 14px;
+            margin-bottom: 5px;
+            text-align: center;
+            font-weight: bold;
+            text-shadow: 0 0 5px var(--neon);
+        }
+        
+        .color-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            max-width: 120px;
+        }
+        
+        .color-btn {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .color-btn:hover {
+            transform: scale(1.2);
+        }
+        /* زر اختيار اللون المخصص */
+        
+        .custom-color-btn {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .custom-color-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .custom-color-btn input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        /* أزرار التحكم - أعلى اليمين */
+        
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9999;
+        }
+        
+        .controls-title {
+            color: var(--neon);
+            font-size: 14px;
+            margin-bottom: 5px;
+            text-align: center;
+            font-weight: bold;
+            text-shadow: 0 0 5px var(--neon);
+        }
+        
+        .controls-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .controls button {
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--neon);
+            border: 1px solid var(--neon);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+            font-size: 14px;
+            box-shadow: 0 0 10px var(--neon);
+            min-width: 140px;
+        }
+        
+        .controls button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        /* البروفايل Neon */
+        
+        .profile-card {
+            position: relative;
+            background: rgba(15, 15, 30, 0.85);
+            border-radius: 30px;
+            padding: 60px 50px;
+            text-align: center;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 0 30px var(--neon), 0 0 70px var(--neon) inset;
+            z-index: 1;
+            overflow: hidden;
+            border: 2px solid var(--neon);
+            animation: pulseNeon 2s infinite alternate;
+            transition: all 0.4s ease;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes pulseNeon {
+            0% {
+                box-shadow: 0 0 20px var(--neon), 0 0 50px var(--neon) inset;
+            }
+            100% {
+                box-shadow: 0 0 40px var(--neon), 0 0 80px var(--neon) inset;
+            }
+        }
+        /* تأثيرات إضافية */
+        
+        @keyframes gentleFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+        
+        .profile-card:hover {
+            animation: pulseNeon 2s infinite alternate, gentleFloat 4s ease-in-out infinite;
+        }
+        /* شريط التقدم */
+        
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--neon);
+            z-index: 10000;
+            transition: width 0.3s;
+            box-shadow: 0 0 10px var(--neon);
+        }
+        /* الإشعارات */
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--neon);
+            color: var(--bg-color);
+            padding: 12px 24px;
+            border-radius: 10px;
+            z-index: 10000;
+            opacity: 0;
+            transition: all 0.4s ease;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        /* أزرار الثيمات */
+        
+        .theme-buttons {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .theme-btn {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .theme-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .profile-card h1 {
+            font-size: clamp(24px, 5vw, 32px);
+            margin-bottom: 10px;
+            color: var(--neon);
+            text-shadow: 0 0 10px var(--neon), 0 0 25px var(--neon);
+        }
+        
+        .profile-card p {
+            font-size: clamp(14px, 3.5vw, 18px);
+            color: #ccc;
+            margin-bottom: 25px;
+        }
+        
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .social-links a {
+            text-decoration: none;
+            color: var(--neon);
+            border: 2px solid var(--neon);
+            padding: 14px 22px;
+            border-radius: 15px;
+            font-weight: bold;
+            transition: 0.4s;
+            box-shadow: 0 0 5px var(--neon), 0 0 15px var(--neon) inset;
+            font-size: clamp(16px, 4vw, 20px);
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .social-links a:hover {
+            background: var(--neon);
+            color: #0f0f1f;
+            transform: scale(1.15);
+            box-shadow: 0 0 35px var(--neon), 0 0 70px var(--neon) inset;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.7s;
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .stat.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stat h2 {
+            color: var(--neon);
+            font-size: clamp(18px, 5vw, 26px);
+            margin-bottom: 5px;
+            text-shadow: 0 0 12px var(--neon), 0 0 25px var(--neon);
+        }
+        
+        .stat p {
+            font-size: clamp(14px, 3.5vw, 16px);
+            color: #ccc;
+        }
+        
+        .profile-card .avatar-container {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .profile-card img {
+            width: 25vw;
+            max-width: 180px;
+            height: auto;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            border: 4px solid var(--neon);
+            transition: transform 0.5s, box-shadow 0.5s, border-color 0.5s;
+        }
+        
+        .profile-card img:hover {
+            transform: rotate(15deg) scale(1.15);
+            box-shadow: 0 0 50px var(--neon), 0 0 100px var(--neon) inset;
+        }
+        
+        .ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            transform: translate(-50%, -50%);
+            border: 3px solid var(--neon);
+            border-radius: 50%;
+            animation: rotateRing 6s linear infinite;
+            opacity: 0.6;
+            box-shadow: 0 0 25px var(--neon), 0 0 50px var(--neon) inset;
+        }
+        
+        .ring:nth-child(2) {
+            width: 135%;
+            height: 135%;
+            animation-duration: 8s;
+            opacity: 0.4;
+        }
+        
+        .ring:nth-child(3) {
+            width: 150%;
+            height: 150%;
+            animation-duration: 10s;
+            opacity: 0.3;
+        }
+        
+        @keyframes rotateRing {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+        
+        .trail {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--neon);
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 15px var(--neon), 0 0 25px var(--neon) inset;
+            opacity: 0.7;
+            transition: transform 0.05s;
+            z-index: 1000;
+        }
+        /* قسم Contact Me */
+        
+        .contact-section {
+            position: relative;
+            background: rgba(15, 15, 30, 0.85);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 0 30px var(--neon), 0 0 70px var(--neon) inset;
+            z-index: 1;
+            overflow: hidden;
+            border: 2px solid var(--neon);
+            animation: pulseNeon 2s infinite alternate;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .contact-section h2 {
+            font-size: clamp(20px, 5vw, 28px);
+            margin-bottom: 20px;
+            color: var(--neon);
+            text-shadow: 0 0 10px var(--neon), 0 0 25px var(--neon);
+        }
+        
+        .contact-section p {
+            font-size: clamp(14px, 3.5vw, 16px);
+            color: #ccc;
+            margin-bottom: 25px;
+        }
+        
+        .contact-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .contact-links a {
+            text-decoration: none;
+            color: var(--neon);
+            border: 2px solid var(--neon);
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            transition: 0.4s;
+            box-shadow: 0 0 5px var(--neon), 0 0 15px var(--neon) inset;
+            font-size: clamp(14px, 3.5vw, 18px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .contact-links a:hover {
+            background: var(--neon);
+            color: #0f0f1f;
+            transform: scale(1.1);
+            box-shadow: 0 0 35px var(--neon), 0 0 70px var(--neon) inset;
+        }
+        /* تحسينات للشاشات الصغيرة */
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .profile-card,
+            .contact-section {
+                padding: 40px 20px;
+                margin: 20px 0;
+            }
+            .social-links,
+            .contact-links {
+                flex-direction: column;
+            }
+            .stats {
+                flex-direction: column;
+            }
+            .color-picker {
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                padding: 10px 8px;
+            }
+            .controls {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+            }
+            .controls button {
+                min-width: 120px;
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            .profile-card img {
+                width: 35vw;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .profile-card {
+                padding: 30px 15px;
+            }
+            .color-picker {
+                padding: 8px 6px;
+            }
+            .color-btn,
+            .custom-color-btn {
+                width: 22px;
+                height: 22px;
+            }
+            .controls button {
+                min-width: 110px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- فيديو الخلفية -->
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="videos/Itachi Uchiha - Bloody Mary [Edit⧸AMV].mp4" type="video/mp4">
+        المتصفح لا يدعم الفيديو.
+    </video>
+
+    <!-- شريط التقدم -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- الإشعارات -->
+    <div class="notification" id="notification"></div>
+
+    <!-- لوحة ألوان يدوية - أعلى اليسار -->
+    <div class="color-picker">
+        <div class="color-picker-title">🤡 الألوان</div>
+        <div class="color-buttons">
+            <button class="color-btn" style="background:#00ffff;" data-color="#00ffff" aria-label="لون سماوي"></button>
+            <button class="color-btn" style="background:#ffffff;" data-color="#ffffff" aria-label="لون أبيض"></button>
+            <button class="color-btn" style="background:#00ff00;" data-color="#00ff00" aria-label="لون أخضر"></button>
+            <button class="color-btn" style="background:#ff9900;" data-color="#ff9900" aria-label="لون برتقالي"></button>
+            <button class="color-btn" style="background:#ff0000;" data-color="#ff0000" aria-label="لون أحمر"></button>
+
+            <!-- زر اختيار اللون المخصص -->
+            <div class="custom-color-btn" title="اختيار لون مخصص">
+                <span>🎨</span>
+                <input type="color" id="custom-color" value="#00ffff">
+            </div>
+        </div>
+
+        <!-- أزرار الثيمات المسبقة -->
+        <div class="theme-buttons">
+            <button class="theme-btn" style="background:#00ffff;" data-theme="cyan" title="سماوي"></button>
+            <button class="theme-btn" style="background:#ff00ff;" data-theme="magenta" title="أرجواني"></button>
+            <button class="theme-btn" style="background:#00ff00;" data-theme="green" title="أخضر نيون"></button>
+            <button class="theme-btn" style="background:#ffff00;" data-theme="yellow" title="أصفر"></button>
+            <button class="theme-btn" style="background:#ff9900;" data-theme="orange" title="برتقالي"></button>
+        </div>
+    </div>
+
+    <!-- أزرار التحكم - أعلى اليمين -->
+    <div class="controls">
+        <div class="controls-title">⚙️ التحكم</div>
+        <div class="controls-buttons">
+            <button id="play-sound">🎵 تشغيل الصوت</button>
+            <button id="toggle-sound">🔇 كتم الصوت</button>
+            <button id="toggle-profile">👁️ إخفاء البروفايل</button>
+            <button id="type-effect">⌨️ تأثير الكتابة</button>
+        </div>
+    </div>
+
+    <div class="lines"></div>
+    <div class="particles" id="particles"></div>
+    <div class="trail" id="trail"></div>
+
+    <div class="profile-card" id="profile-card">
+        <div class="avatar-container">
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <img id="avatar" src="https://media.discordapp.net/attachments/1309201385832710185/1432792647860224240/1a21bd424e6c1f3df08f924cdc39b19a.jpg?ex=690257a3&is=69010623&hm=c5f2a68142f837cac43cb8c46d6fe4205322b91c016326de5c2196a891623f5c&=&format=webp&width=676&height=676"
+                alt="صورة البروفايل لـ SparkZx">
+        </div>
+
+        <h1 id="username">ItachiXxy</h1>
+        <p id="bio">I'm ItachiXxy WebSite Developer</p>
+
+        <div class="social-links" id="socials">
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a>
+            <a href="https://kick.com/sparkzxx" target="_blank" rel="noopener">Kick</a>
+            <a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a>
+            <a href="https://www.youtube.com/@Johan7X" target="_blank" rel="noopener">YouTube</a>
+        </div>
+
+        <div class="stats">
+            <div class="stat" data-target="1500">
+                <h2>0</h2>
+                <p>المتابعون</p>
+            </div>
+            <div class="stat" data-target="89">
+                <h2>0</h2>
+                <p>المشاريع</p>
+            </div>
+            <div class="stat" data-target="3">
+                <h2>0</h2>
+                <p>سنوات الخبرة</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- قسم Contact Me -->
+    <div class="contact-section" id="contact-section">
+        <h2>Contact Dev</h2>
+        <p>للتواصل مع مطور الموقع</p>
+        <div class="contact-links">
+            <a href="mailto:abdelahabdilah177@gmail.com" target="_blank" rel="noopener">
+                <span>📧</span> Email
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // كود موحد للتحكم بالفيديو والبروفايل
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('bg-video');
+            const playBtn = document.getElementById('play-sound');
+            const toggleSoundBtn = document.getElementById('toggle-sound');
+            const toggleProfileBtn = document.getElementById('toggle-profile');
+            const typeEffectBtn = document.getElementById('type-effect');
+            const profileCard = document.querySelector('.profile-card');
+            const contactSection = document.querySelector('.contact-section');
+            const customColorInput = document.getElementById('custom-color');
+            const scrollProgress = document.getElementById('scroll-progress');
+            const notification = document.getElementById('notification');
+            const bioElement = document.getElementById('bio');
+
+            // تهيئة العناصر
+            profileCard.style.opacity = '1';
+            profileCard.style.transform = 'translateY(0)';
+            contactSection.style.opacity = '1';
+            contactSection.style.transform = 'translateY(0)';
+
+            // إظهار إشعار
+            function showNotification(message) {
+                notification.textContent = message;
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            // Count-Up للإحصائيات
+            const statsElements = document.querySelectorAll('.stat');
+            statsElements.forEach((stat, index) => {
+                setTimeout(() => {
+                    stat.classList.add('show');
+                    const target = +stat.getAttribute('data-target');
+                    const number = stat.querySelector('h2');
+                    let count = 0;
+                    const step = Math.ceil(target / 100);
+                    const interval = setInterval(() => {
+                        count += step;
+                        if (count >= target) {
+                            number.textContent = target;
+                            clearInterval(interval);
+                        } else {
+                            number.textContent = count;
+                        }
+                    }, 15);
+                }, index * 400);
+            });
+
+            // إنشاء نقاط Neon صغيرة تتحرك
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDuration = (5 + Math.random() * 5) + 's';
+                particlesContainer.appendChild(p);
+            }
+
+            // Neon trail عند تحريك الماوس
+            const trail = document.getElementById('trail');
+            document.addEventListener('mousemove', (e) => {
+                trail.style.transform = `translate(${e.clientX-6}px,${e.clientY-6}px)`;
+            });
+
+            // تغيير Neon يدوياً عند الضغط على أي لون
+            const colorButtons = document.querySelectorAll('.color-btn');
+            colorButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const color = btn.getAttribute('data-color');
+                    document.documentElement.style.setProperty('--neon', color);
+                    customColorInput.value = color;
+                    showNotification('تم تغيير اللون!');
+                });
+            });
+
+            // تغيير اللون باستخدام أداة اختيار اللون المخصص
+            customColorInput.addEventListener('input', (e) => {
+                const color = e.target.value;
+                document.documentElement.style.setProperty('--neon', color);
+                showNotification('تم تطبيق اللون المخصص!');
+            });
+
+            // الثيمات المسبقة
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            themeButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const theme = btn.getAttribute('data-theme');
+                    let color;
+                    switch (theme) {
+                        case 'cyan':
+                            color = '#00ffff';
+                            break;
+                        case 'magenta':
+                            color = '#ff00ff';
+                            break;
+                        case 'green':
+                            color = '#00ff00';
+                            break;
+                        case 'yellow':
+                            color = '#ffff00';
+                            break;
+                        case 'orange':
+                            color = '#ff9900';
+                            break;
+                        default:
+                            color = '#00ffff';
+                    }
+                    document.documentElement.style.setProperty('--neon', color);
+                    customColorInput.value = color;
+                    showNotification(`تم تطبيق ثيم ${theme}!`);
+                });
+            });
+
+            // تأثير الكتابة
+            function typeWriter() {
+                const bioText = "I'm ItachiXxy WebSite Developer";
+                bioElement.innerHTML = '';
+                let i = 0;
+
+                function type() {
+                    if (i < bioText.length) {
+                        bioElement.innerHTML += bioText.charAt(i);
+                        i++;
+                        setTimeout(type, 100);
+                    }
+                }
+                type();
+            }
+
+            typeEffectBtn.addEventListener('click', () => {
+                typeWriter();
+                showNotification('تفعيل تأثير الكتابة!');
+            });
+
+            // شريط التقدم
+            window.addEventListener('scroll', () => {
+                const winHeight = window.innerHeight;
+                const docHeight = document.documentElement.scrollHeight;
+                const scrolled = (window.scrollY / (docHeight - winHeight)) * 100;
+                scrollProgress.style.width = scrolled + '%';
+            });
+
+            // 🎵 زر تشغيل الصوت
+            playBtn.addEventListener('click', async() => {
+                try {
+                    video.muted = false;
+                    await video.play();
+                    playBtn.textContent = "✅ الصوت يعمل";
+                    playBtn.disabled = true;
+                    toggleSoundBtn.textContent = "🔇 كتم الصوت";
+                    showNotification('تم تشغيل الصوت!');
+                } catch (err) {
+                    console.warn("تعذر تشغيل الفيديو بالصوت:", err);
+                    playBtn.textContent = "⚠️ لم يمكن تشغيل الصوت";
+                    showNotification('تعذر تشغيل الصوت!');
+                }
+            });
+
+            // 🔇 زر كتم وتشغيل الصوت
+            toggleSoundBtn.addEventListener('click', () => {
+                video.muted = !video.muted;
+                toggleSoundBtn.textContent = video.muted ? "🔊 تشغيل الصوت" : "🔇 كتم الصوت";
+                showNotification(video.muted ? 'تم كتم الصوت!' : 'تم تشغيل الصوت!');
+                if (!video.muted) video.play().catch(() => {});
+            });
+
+            // 👁️ زر إخفاء / إظهار البروفايل
+            let isProfileVisible = true;
+            toggleProfileBtn.addEventListener('click', () => {
+                isProfileVisible = !isProfileVisible;
+                if (isProfileVisible) {
+                    profileCard.style.display = 'block';
+                    contactSection.style.display = 'block';
+                    toggleProfileBtn.textContent = '👁️ إخفاء البروفايل';
+                    showNotification('تم إظهار البروفايل!');
+                } else {
+                    profileCard.style.display = 'none';
+                    contactSection.style.display = 'none';
+                    toggleProfileBtn.textContent = '👁️ إظهار البروفايل';
+                    showNotification('تم إخفاء البروفايل!');
+                }
+            });
+
+            // تحميل كسول للصور
+            const images = document.querySelectorAll('img');
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.src;
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+
+            images.forEach(img => imageObserver.observe(img));
+
+            // حفظ التفضيلات
+            function savePreferences() {
+                const neonColor = getComputedStyle(document.documentElement).getPropertyValue('--neon').trim();
+                localStorage.setItem('neonColor', neonColor);
+            }
+
+            // تحميل التفضيلات
+            function loadPreferences() {
+                const savedColor = localStorage.getItem('neonColor');
+                if (savedColor) {
+                    document.documentElement.style.setProperty('--neon', savedColor);
+                    customColorInput.value = savedColor;
+                }
+            }
+
+            // تحميل التفضيلات عند بدء التشغيل
+            loadPreferences();
+
+            // حفظ التفضيلات عند تغيير اللون
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('color-btn') ||
+                    e.target.classList.contains('theme-btn') ||
+                    e.target.id === 'custom-color') {
+                    setTimeout(savePreferences, 100);
+                }
+            });
+
+            // تحسينات الوصولية
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    document.body.style.cursor = 'default';
+                }
+            });
+
+            document.addEventListener('mousedown', () => {
+                document.body.style.cursor = 'crosshair';
+            });
+
+            // إظهار إشعار ترحيب
+            setTimeout(() => {
+                showNotification('مرحباً بك في موقع ItachiXxy!');
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>
